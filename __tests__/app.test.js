@@ -15,8 +15,9 @@ describe('/api/topics', () => {
         .get('/api/topics')
         .expect(200)
         .then(({ body }) => {
-            expect(body.topics).toBeInstanceOf(Array);
-          expect(body.topics[0]).toMatchObject({slug:expect.any(String), description:expect.any(String)});
+            body.topics.forEach(topics =>{
+                expect(topics).toMatchObject({slug:expect.any(String), description:expect.any(String)});
+            });
         });
     });
   });
@@ -77,3 +78,35 @@ describe("/api/articles/:article_id",()=>{
           });
       });
 })
+
+//task 5
+describe('/api/articles', () => {
+    test('200: responds with an array of articles', () => {
+        return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(({ body }) => {
+                body.articles.forEach(article => {
+                    expect(article).toMatchObject({
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        author: expect.any(String),
+                        topic: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.any(String),
+                    });
+                });
+            });
+    });
+
+    test('404: responds with "Not Found" for an invalid endpoint', () => {
+        return request(app)
+            .get('/api/invalid-endpoint')
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Not Found');
+            });
+    });
+});
