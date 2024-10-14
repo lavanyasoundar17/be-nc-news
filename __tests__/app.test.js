@@ -19,14 +19,6 @@ describe('/api/topics', () => {
           expect(body.topics[0]).toMatchObject({slug:expect.any(String), description:expect.any(String)});
         });
     });
-    test('404: responds with a 404 error for an invalid endpoint', () => {
-        return request(app)
-            .get('/api/invalid-endpoint')
-            .expect(404)
-            .then(({ body }) => {
-                expect(body.msg).toBe('Not Found');
-            });
-    });
   });
 
   describe("/api",()=>{
@@ -38,4 +30,50 @@ describe('/api/topics', () => {
             expect(body.endpoints).toEqual(endpoints)
         })
     });
+    test('404: responds with a 404 error for an invalid endpoint', () => {
+        return request(app)
+            .get('/api/invalid-endpoint')
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Not Found');
+            });
+    });
+})
+
+//task-4
+describe("/api/articles/:article_id",()=>{
+    test("200:responds with an article for valid article_id ",()=>{
+        return request(app)
+        .get(`/api/articles/1`)
+        .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toMatchObject({
+            
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            article_img_url: expect.any(String),
+            votes: expect.any(Number)
+        });
+      });
+
+    });
+    test("404: responds with 'Not Found' when given a non-existing article ID", () => {
+        return request(app)
+          .get("/api/articles/9999")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Article not found");
+          });
+      });
+      test("400: responds with 'Bad Request' when given an invalid article ID", () => {
+        return request(app)
+          .get("/api/articles/not-a-number")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad request");
+          });
+      });
 })
