@@ -110,3 +110,41 @@ describe('/api/articles', () => {
             });
     });
 });
+//task 6
+describe('/api/articles/:article_id/comments', () => {
+    test('200: responds with an array of comments for a valid article_id', () => {
+        return request(app)
+            .get('/api/articles/1/comments')
+            .expect(200)
+            .then(({ body }) => {
+                body.comments.forEach(comment => {
+                    expect(comment).toMatchObject({
+                        comment_id: expect.any(Number),
+                        votes: expect.any(Number),
+                        created_at: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                        article_id: expect.any(Number),
+                    });
+                });
+            });
+    });
+
+    test('404: responds with "Article not found" for a non-existing article ID', () => {
+        return request(app)
+            .get('/api/articles/9999/comments')
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Article not found');
+            });
+    });
+
+    test("400: responds with 'Bad Request' when given an invalid article ID", () => {
+        return request(app)
+            .get("/api/articles/not-a-number/comments")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad request");
+            });
+    });
+});
