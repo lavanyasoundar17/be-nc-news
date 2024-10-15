@@ -3,7 +3,9 @@ const app = require('../app')
 const db = require('../db/connection');
 const seed = require('../db/seeds/seed');
 const data = require('../db/data/test-data/index');
-const endpoints = require("../endpoints.json")
+const endpoints = require("../endpoints.json");
+require('jest-sorted');
+
 
 
 beforeEach(()=>seed(data));
@@ -86,7 +88,12 @@ describe('/api/articles', () => {
             .get('/api/articles')
             .expect(200)
             .then(({ body }) => {
-                body.articles.forEach(article => {
+                const articles = body.articles;
+                const dates = articles.map(article => new Date(article.created_at).getTime());
+
+                expect(articles.length).toBeGreaterThan(0);
+
+                articles.forEach(article => {
                     expect(article).toMatchObject({
                         article_id: expect.any(Number),
                         title: expect.any(String),
@@ -98,6 +105,8 @@ describe('/api/articles', () => {
                         comment_count: expect.any(String),
                     });
                 });
+
+                expect(dates).toEqual([...dates].sort((a, b) => b - a));  
             });
     });
 
@@ -117,7 +126,11 @@ describe('/api/articles/:article_id/comments', () => {
             .get('/api/articles/1/comments')
             .expect(200)
             .then(({ body }) => {
-                body.comments.forEach(comment => {
+                const comments =  body.comments;
+
+                expect(comments.length).toBeGreaterThan(0);
+
+                comments.forEach(comment => {
                     expect(comment).toMatchObject({
                         comment_id: expect.any(Number),
                         votes: expect.any(Number),
@@ -129,6 +142,23 @@ describe('/api/articles/:article_id/comments', () => {
                 });
             });
     });
+    test('200: responds with comments sorted by most recent first', () => {
+        return request(app)
+          .get('/api/articles/1/comments')
+          .expect(200)
+          .then(({ body }) => {
+            const comments  = body.comments;
+            expect(comments).toBeSortedBy('created_at', { descending: true });
+          });
+      });
+      test('200: responds with an empty array when the article has no comments', () => {
+        return request(app)
+          .get('/api/articles/2/comments')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comments).toEqual([]);
+          });
+      });
 
     test('404: responds with "Article not found" for a non-existing article ID', () => {
         return request(app)

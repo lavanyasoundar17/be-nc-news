@@ -1,6 +1,11 @@
 const db = require('../db/connection');
 
 function selectCommentsByArticleId(article_id) {
+
+    if (isNaN(article_id)) {
+        return Promise.reject({ status: 400, msg: 'Bad request' });
+      }
+      
     return db.query(`
         SELECT comment_id, votes, created_at, author, body, article_id
         FROM comments
