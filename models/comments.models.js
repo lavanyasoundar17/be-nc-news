@@ -12,9 +12,30 @@ function selectCommentsByArticleId(article_id) {
         WHERE article_id = $1
         ORDER BY created_at DESC;
     `, [article_id])
-    .then(result => {
+    .then((result) => {
         return result.rows; 
     });
 }
 
-module.exports = { selectCommentsByArticleId };
+//task 7
+function insertCommentByArticleId(article_id,username,body){
+    if (isNaN(article_id)) {
+        return Promise.reject({ status: 400, msg: 'Bad Request' });
+      }
+    if (!username || !body) {
+        return Promise.reject({ status: 400, msg: 'Bad request: missing required fields' });
+    }
+      const queryStr = `INSERT INTO comments (author,body,article_id,votes,created_at)
+      VALUES ($1,$2,$3,0,NOW())
+      RETURNING author, body, article_id, votes, created_at;`
+
+      return db.query(queryStr, [username, body, article_id])
+        .then((result) => {
+            if (result.rows.length === 0) {
+                return Promise.reject({ status: 404, msg: 'Article not found' });
+            }
+            return result.rows[0]; 
+        });
+
+}
+module.exports = { selectCommentsByArticleId,insertCommentByArticleId };

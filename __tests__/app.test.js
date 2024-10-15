@@ -176,3 +176,50 @@ describe('/api/articles/:article_id/comments', () => {
             });
     });
 });
+
+//task 7
+describe('POST /api/articles/:article_id/comments',()=>{
+    test("201: responds with posted comment",()=>{
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send({ username: 'butter_bridge', body: 'Great article!' })
+        .expect(201)
+        .then(({body})=>{
+            expect(body.comment).toEqual({
+                body: "Great article!",
+                 votes: 0,
+                 author: "butter_bridge",
+                 article_id: 1,
+                created_at: expect.any(String)
+            })
+        })
+    });
+    test('400: responds with error when body is missing any fields', () => {
+        return request(app)
+            .post('/api/articles/1/comments')
+            .send({ body: 'Great article!' })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Bad request: missing required fields');
+            });
+    });
+    test('404: responds with error when article_id does not exist', () => {
+        return request(app)
+            .post('/api/articles/9999/comments')
+            .send({ username: 'butter_bridge', body: 'Great article!' })
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Article not found');
+            });
+    });
+
+    test('400: responds with error when article_id is not a valid number', () => {
+        return request(app)
+            .post('/api/articles/not-a-number/comments')
+            .send({ username: 'butter_bridge', body: 'Great article!' })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Bad request');
+            });
+    });
+})

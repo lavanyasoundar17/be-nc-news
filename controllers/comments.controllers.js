@@ -1,14 +1,11 @@
-const { selectCommentsByArticleId } = require('../models/comments.models.js');
+const { selectCommentsByArticleId,insertCommentByArticleId } = require('../models/comments.models.js');
 const { selectArticleById } = require('../models/articles.models.js');
 
 function getCommentsByArticleId(req, res, next) {
     const { article_id } = req.params;
 
      selectArticleById(article_id)
-        .then(article => {
-            if (!article) {
-                return Promise.reject({ status: 404, msg: "Article not found" });
-            }
+        .then(() => {
             return selectCommentsByArticleId(article_id);
         })
         .then(comments => {
@@ -17,4 +14,18 @@ function getCommentsByArticleId(req, res, next) {
         .catch(next);
 }
 
-module.exports = { getCommentsByArticleId };
+//task 7
+function postCommentByArticleId(req,res,next){
+    const {article_id} = req.params;
+    const {username,body} = req.body;
+    selectArticleById(article_id)
+    .then(()=>{
+        return insertCommentByArticleId(article_id,username,body)
+    })
+    .then(comment => {
+        res.status(201).send({ comment });
+    })
+    .catch(next);
+}
+
+module.exports = { getCommentsByArticleId,postCommentByArticleId };
