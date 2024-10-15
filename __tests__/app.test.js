@@ -89,9 +89,7 @@ describe('/api/articles', () => {
             .expect(200)
             .then(({ body }) => {
                 const articles = body.articles;
-                const dates = articles.map(article => new Date(article.created_at).getTime());
-
-                expect(articles.length).toBeGreaterThan(0);
+                expect(articles.length).toBe(13);
 
                 articles.forEach(article => {
                     expect(article).toMatchObject({
@@ -106,7 +104,7 @@ describe('/api/articles', () => {
                     });
                 });
 
-                expect(dates).toEqual([...dates].sort((a, b) => b - a));  
+                expect(articles).toBeSortedBy('created_at', { descending: true }); 
             });
     });
 
@@ -128,7 +126,7 @@ describe('/api/articles/:article_id/comments', () => {
             .then(({ body }) => {
                 const comments =  body.comments;
 
-                expect(comments.length).toBeGreaterThan(0);
+                expect(comments.length).toBe(11);
 
                 comments.forEach(comment => {
                     expect(comment).toMatchObject({
@@ -178,3 +176,50 @@ describe('/api/articles/:article_id/comments', () => {
             });
     });
 });
+
+//task 7
+describe('POST /api/articles/:article_id/comments',()=>{
+    test("201: responds with posted comment",()=>{
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send({ username: 'butter_bridge', body: 'Great article!' })
+        .expect(201)
+        .then(({body})=>{
+            expect(body.comment).toEqual({
+                body: "Great article!",
+                 votes: 0,
+                 author: "butter_bridge",
+                 article_id: 1,
+                created_at: expect.any(String)
+            })
+        })
+    });
+    test('400: responds with error when body is missing any fields', () => {
+        return request(app)
+            .post('/api/articles/1/comments')
+            .send({ body: 'Great article!' })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Bad request: missing required fields');
+            });
+    });
+    test('404: responds with error when article_id does not exist', () => {
+        return request(app)
+            .post('/api/articles/9999/comments')
+            .send({ username: 'butter_bridge', body: 'Great article!' })
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Article not found');
+            });
+    });
+
+    test('400: responds with error when article_id is not a valid number', () => {
+        return request(app)
+            .post('/api/articles/not-a-number/comments')
+            .send({ username: 'butter_bridge', body: 'Great article!' })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Bad request');
+            });
+    });
+})
