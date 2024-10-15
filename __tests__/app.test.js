@@ -89,9 +89,7 @@ describe('/api/articles', () => {
             .expect(200)
             .then(({ body }) => {
                 const articles = body.articles;
-                const dates = articles.map(article => new Date(article.created_at).getTime());
-
-                expect(articles.length).toBeGreaterThan(0);
+                expect(articles.length).toBe(13);
 
                 articles.forEach(article => {
                     expect(article).toMatchObject({
@@ -106,7 +104,7 @@ describe('/api/articles', () => {
                     });
                 });
 
-                expect(dates).toEqual([...dates].sort((a, b) => b - a));  
+                expect(articles).toBeSortedBy('created_at', { descending: true }); 
             });
     });
 
@@ -128,7 +126,7 @@ describe('/api/articles/:article_id/comments', () => {
             .then(({ body }) => {
                 const comments =  body.comments;
 
-                expect(comments.length).toBeGreaterThan(0);
+                expect(comments.length).toBe(11);
 
                 comments.forEach(comment => {
                     expect(comment).toMatchObject({
