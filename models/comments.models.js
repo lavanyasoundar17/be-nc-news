@@ -1,10 +1,6 @@
 const db = require('../db/connection');
 
 function selectCommentsByArticleId(article_id) {
-
-    if (isNaN(article_id)) {
-        return Promise.reject({ status: 400, msg: 'Bad request' });
-      }
       
     return db.query(`
         SELECT comment_id, votes, created_at, author, body, article_id
@@ -19,10 +15,7 @@ function selectCommentsByArticleId(article_id) {
 
 //task 7
 function insertCommentByArticleId(article_id,username,body){
-    if (isNaN(article_id)) {
-        return Promise.reject({ status: 400, msg: 'Bad Request' });
-      }
-    if (!username || !body) {
+    if (username===undefined && body===undefined) {
         return Promise.reject({ status: 400, msg: 'Bad request: missing required fields' });
     }
       const queryStr = `INSERT INTO comments (author,body,article_id,votes,created_at)
