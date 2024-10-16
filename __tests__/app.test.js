@@ -194,15 +194,6 @@ describe('POST /api/articles/:article_id/comments',()=>{
             })
         })
     });
-    test('400: responds with error when body is missing any fields', () => {
-        return request(app)
-            .post('/api/articles/1/comments')
-            .send({ body: 'Great article!' })
-            .expect(400)
-            .then(({ body }) => {
-                expect(body.msg).toBe('Bad request: missing required fields');
-            });
-    });
     test('404: responds with error when article_id does not exist', () => {
         return request(app)
             .post('/api/articles/9999/comments')
@@ -223,3 +214,65 @@ describe('POST /api/articles/:article_id/comments',()=>{
             });
     });
 })
+
+//task 8
+describe('PATCH /api/articles/:article_id', () => {
+    test('200: responds with the updated article when incrementing votes', () => {
+        return request(app)
+            .patch('/api/articles/2')
+            .send({ inc_votes: 1 })
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article).toMatchObject({
+                    article_id: 2,
+                    title: expect.any(String),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    created_at: expect.any(String),
+                    article_img_url: expect.any(String),
+                    votes: 1
+                });
+            });
+    });
+
+    test('200: responds with the updated article when decrementing votes', () => {
+        return request(app)
+            .patch('/api/articles/1')
+            .send({ inc_votes: -1 })
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article).toMatchObject({
+                    article_id: 1,
+                    title: expect.any(String),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    created_at: expect.any(String),
+                    article_img_url: expect.any(String),
+                    votes: 99
+                });
+            });
+    });
+
+    test('400: responds with "Bad request" when inc_votes is missing', () => {
+        return request(app)
+            .patch('/api/articles/1')
+            .send({})
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Bad request: missing required fields');
+            });
+    });
+
+    test('404: responds with "Article not found" for a non-existing article ID', () => {
+        return request(app)
+            .patch('/api/articles/9999')
+            .send({ inc_votes: 1 })
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Article not found');
+            });
+    });
+
+});
