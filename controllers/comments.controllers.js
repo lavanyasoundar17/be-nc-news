@@ -1,4 +1,4 @@
-const { selectCommentsByArticleId,insertCommentByArticleId } = require('../models/comments.models.js');
+const { selectCommentsByArticleId,insertCommentByArticleId,selectCommentsByCommentsId} = require('../models/comments.models.js');
 const { selectArticleById } = require('../models/articles.models.js');
 
 function getCommentsByArticleId(req, res, next) {
@@ -28,4 +28,15 @@ function postCommentByArticleId(req,res,next){
     .catch(next);
 }
 
-module.exports = { getCommentsByArticleId,postCommentByArticleId };
+//task 9
+function deleteComments(req,res,next){
+    const {comment_id}=req.params;
+    selectCommentsByCommentsId(comment_id)
+    .then(()=>{
+        res.status(204).send();
+    })
+    .catch(next);
+
+}
+
+module.exports = { getCommentsByArticleId,postCommentByArticleId,deleteComments };
