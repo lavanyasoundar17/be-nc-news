@@ -14,7 +14,10 @@ function getArticlesById (req,res,next){
 //task5 
 
 function getArticles(req,res,next){
-    return selectArticle()
+    
+    const {sort_by,order}=req.query;
+
+    return selectArticle(sort_by, order)
     .then((articles)=>{
         res.status(200).send({ articles });
     })
