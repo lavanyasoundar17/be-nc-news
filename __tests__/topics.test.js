@@ -4,6 +4,7 @@ const db = require('../db/connection');
 const seed = require('../db/seeds/seed');
 const data = require('../db/data/test-data/index');
 const endpoints = require("../endpoints.json");
+const { string } = require('pg-format');
 require('jest-sorted');
 
 
@@ -302,3 +303,5 @@ describe('DELETE /api/comments/:comment_id', () => {
             });
     });
 });
+
+
