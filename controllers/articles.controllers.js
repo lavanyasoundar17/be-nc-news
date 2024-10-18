@@ -11,11 +11,14 @@ function getArticlesById (req,res,next){
 }
 
 
+
 //task5 & task11
+
+
 
 function getArticles(req,res,next){
     
-    const {sort_by,order}=req.query;
+
 
     const validQueries = ['sort_by', 'order'];
     const receivedQueries = Object.keys(req.query);
@@ -28,6 +31,7 @@ function getArticles(req,res,next){
     }
     
     return selectArticle(sort_by, order)
+
     .then((articles)=>{
         res.status(200).send({ articles });
     })

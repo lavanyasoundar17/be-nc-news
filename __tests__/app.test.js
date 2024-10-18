@@ -326,6 +326,7 @@ describe('/api/users',()=>{
     })
 })
 
+
 //task 11
 describe('/api/articles', () => {
     test('200: responds with articles sorted by topic in ascending order', () => {
@@ -373,5 +374,4 @@ describe('/api/articles', () => {
         })
     })
 });
-
 

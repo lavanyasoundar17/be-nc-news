@@ -15,6 +15,7 @@ function selectArticleById(article_id){
         });
 }
 
+
 //task 5&task 11
 function selectArticle(sort_by= 'created_at',order = 'desc'){
     if(!sort_by){
@@ -23,6 +24,8 @@ function selectArticle(sort_by= 'created_at',order = 'desc'){
     if(!order){
         order = 'desc';
     }
+
+
     
     const query = `
         SELECT articles.article_id, articles.title, articles.author, articles.topic, 
@@ -31,7 +34,7 @@ function selectArticle(sort_by= 'created_at',order = 'desc'){
         FROM articles
         LEFT JOIN comments ON articles.article_id = comments.article_id
         GROUP BY articles.article_id
-        ORDER BY ${sort_by} ${order};
+        ORDER BY articles.created_at DESC;
     `;
 return db.query(query)
 .then((result)=>{
