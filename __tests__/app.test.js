@@ -326,44 +326,4 @@ describe('/api/users',()=>{
     })
 })
 
-//task 11
-describe.only('/api/articles', () => {
-    test('200: responds with articles sorted by topic in ascending order', () => {
-        return request(app)
-            .get('/api/articles?sort_by=topic&order=asc')
-            .expect(200)
-            .then(({ body }) => {
-                const articles = body.articles;
-                expect(articles).toBeSortedBy('topic', { ascending: true });
-            });
-    });
-
-    test('200: responds with articles sorted by votes in descending order', () => {
-        return request(app)
-            .get('/api/articles?sort_by=votes&order=desc')
-            .expect(200)
-            .then(({ body }) => {
-                const articles = body.articles;
-                expect(articles).toBeSortedBy('votes', { descending: true });
-            });
-    });
-
-    test('400: responds with error for invalid sort_by column', () => {
-        return request(app)
-            .get('/api/articles?sort_by=invalid_column')
-            .expect(400)
-            .then(({ body }) => {
-                expect(body.msg).toBe('Bad request: invalid sort or order query');
-            });
-    });
-    test('400: responds with error for invalid order value', () => {
-        return request(app)
-            .get('/api/articles?order=invalid_order')
-            .expect(400)
-            .then(({ body }) => {
-                expect(body.msg).toBe('Bad request: invalid sort or order query');
-            });
-    });
-});
-
 

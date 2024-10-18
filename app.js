@@ -31,7 +31,7 @@ app.get("/api", (req, res) => {
 
 app.use((error,req,res,next)=>{
     if (error.code === '22P02') { 
-        res.status(400).send({ msg: 'Bad request: invalid input' });
+        res.status(400).send({ msg: 'Bad request: invalid comment_id' });
     }
     if(error.status){
         res.status(error.status).send({msg: error.msg})
