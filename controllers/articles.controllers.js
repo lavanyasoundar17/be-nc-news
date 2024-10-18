@@ -10,8 +10,6 @@ function getArticlesById (req,res,next){
 .catch(next);
 }
 
-
-
 //task5 & task11
 
 function getArticles(req,res,next){
