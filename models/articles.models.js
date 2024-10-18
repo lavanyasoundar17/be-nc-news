@@ -17,23 +17,29 @@ function selectArticleById(article_id){
 
 
 //task 5&task 11
-function selectArticle(sort_by= 'created_at',order = 'desc'){
+function selectArticle(sort_by= 'created_at',order = 'desc',topic=null){
+
     if(!sort_by){
         sort_by = 'created_at';
     }
     if(!order){
         order = 'desc';
     }
+
     const query = `
         SELECT articles.article_id, articles.title, articles.author, articles.topic, 
                articles.created_at, articles.votes, articles.article_img_url,
                COUNT(comments.comment_id) AS comment_count
         FROM articles
         LEFT JOIN comments ON articles.article_id = comments.article_id
+        ${topic ? 'WHERE articles.topic ILIKE $1' : ''}
         GROUP BY articles.article_id
         ORDER BY ${sort_by} ${order};
     `;
-return db.query(query)
+    const queryParams = topic ? [topic] : [];
+
+       return db.query(query,queryParams)
+       
 .then((result)=>{
     if (result.rows.length === 0) {
         return Promise.reject({ status: 404, msg: 'Article not found' });

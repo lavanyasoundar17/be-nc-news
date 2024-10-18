@@ -16,19 +16,9 @@ function getArticlesById (req,res,next){
 
 function getArticles(req,res,next){
     
-    const {sort_by,order}=req.query;
-
-    const validQueries = ['sort_by', 'order'];
-    const receivedQueries = Object.keys(req.query);
-
-    // Check for unsupported query parameters
-    const invalidQueries = receivedQueries.filter(query => !validQueries.includes(query));
-
-    if (invalidQueries.length > 0) {
-        return res.status(400).send({ msg: 'Bad request: invalid query parameter' });
-    }
+    const {sort_by,order,topic}=req.query;
     
-    return selectArticle(sort_by, order)
+    return selectArticle(sort_by, order,topic)
     .then((articles)=>{
         res.status(200).send({ articles });
     })
