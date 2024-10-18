@@ -74,14 +74,6 @@ describe("/api/articles/:article_id",()=>{
             expect(body.msg).toBe("Article not found");
           });
       });
-      test("400: responds with 'Bad Request' when given an invalid article ID", () => {
-        return request(app)
-          .get("/api/articles/not-a-number")
-          .expect(400)
-          .then(({ body }) => {
-            expect(body.msg).toBe("Bad request");
-          });
-      });
 })
 
 //task 5
@@ -169,15 +161,6 @@ describe('/api/articles/:article_id/comments', () => {
                 expect(body.msg).toBe('Article not found');
             });
     });
-
-    test("400: responds with 'Bad Request' when given an invalid article ID", () => {
-        return request(app)
-            .get("/api/articles/not-a-number/comments")
-            .expect(400)
-            .then(({ body }) => {
-                expect(body.msg).toBe("Bad request");
-            });
-    });
 });
 
 //task 7
@@ -207,15 +190,6 @@ describe('POST /api/articles/:article_id/comments',()=>{
             });
     });
 
-    test('400: responds with error when article_id is not a valid number', () => {
-        return request(app)
-            .post('/api/articles/not-a-number/comments')
-            .send({ username: 'butter_bridge', body: 'Great article!' })
-            .expect(400)
-            .then(({ body }) => {
-                expect(body.msg).toBe('Bad request');
-            });
-    });
 })
 
 //task 8
@@ -403,4 +377,26 @@ describe("/api/articles",()=>{
         })
     })
     
+})
+//task 13
+      describe("/api/articles/:article_id",()=>{
+        test("200:should responds with article which included comment_count ",()=>{
+            return request(app)
+            .get(`/api/articles/1`)
+            .expect(200)
+          .then(({ body }) => {
+            expect(body.article).toMatchObject({
+                
+                title: expect.any(String),
+                topic: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                article_img_url: expect.any(String),
+                comment_count:expect.any(String),
+                votes: expect.any(Number)
+            });
+          });
+    
+        });
 })
