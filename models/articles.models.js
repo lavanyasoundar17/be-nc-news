@@ -24,9 +24,6 @@ function selectArticle(sort_by= 'created_at',order = 'desc'){
     if(!order){
         order = 'desc';
     }
-
-
-    
     const query = `
         SELECT articles.article_id, articles.title, articles.author, articles.topic, 
                articles.created_at, articles.votes, articles.article_img_url,
@@ -34,7 +31,7 @@ function selectArticle(sort_by= 'created_at',order = 'desc'){
         FROM articles
         LEFT JOIN comments ON articles.article_id = comments.article_id
         GROUP BY articles.article_id
-        ORDER BY articles.created_at DESC;
+        ORDER BY ${sort_by} ${order};
     `;
 return db.query(query)
 .then((result)=>{
@@ -44,6 +41,7 @@ return db.query(query)
     return result.rows;
 })
 }
+
 
 //task 7
 function updateArticleVotes(article_id,inc_votes){
