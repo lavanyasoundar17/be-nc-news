@@ -301,7 +301,7 @@ describe('DELETE /api/comments/:comment_id', () => {
             .delete('/api/comments/not-a-number') 
             .expect(400)
             .then(({ body }) => {
-                expect(body.msg).toBe('Bad request: invalid comment_id');
+                expect(body.msg).toBe('Bad request: invalid input');
             });
     });
 });
@@ -327,7 +327,7 @@ describe('/api/users',()=>{
 })
 
 //task 11
-describe.only('/api/articles', () => {
+describe('/api/articles', () => {
     test('200: responds with articles sorted by topic in ascending order', () => {
         return request(app)
             .get('/api/articles?sort_by=topic&order=asc')
@@ -353,7 +353,7 @@ describe.only('/api/articles', () => {
             .get('/api/articles?sort_by=invalid_column')
             .expect(400)
             .then(({ body }) => {
-                expect(body.msg).toBe('Bad request: invalid sort or order query');
+                expect(body.msg).toBe('Bad request: invalid input');
             });
     });
     test('400: responds with error for invalid order value', () => {
@@ -361,9 +361,17 @@ describe.only('/api/articles', () => {
             .get('/api/articles?order=invalid_order')
             .expect(400)
             .then(({ body }) => {
-                expect(body.msg).toBe('Bad request: invalid sort or order query');
+                expect(body.msg).toBe('Bad request: invalid input');
             });
     });
+    test('400: responds with error for invalid query parameters',()=>{
+        return request(app)
+        .get('/api/articles?invalidquery')
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Bad request: invalid query parameter');
+        })
+    })
 });
 
 

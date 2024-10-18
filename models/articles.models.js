@@ -15,14 +15,13 @@ function selectArticleById(article_id){
         });
 }
 
-//task 5
+//task 5&task 11
 function selectArticle(sort_by= 'created_at',order = 'desc'){
-    const validSortColumns = ['article_id', 'title', 'author', 'topic', 'created_at', 'votes', 'comment_count'];
-    const validOrders = ['asc', 'desc'];
-
-
-    if (!validSortColumns.includes(sort_by) || !validOrders.includes(order)) {
-        return Promise.reject({ status: 400, msg: 'Bad request: invalid sort or order query' });
+    if(!sort_by){
+        sort_by = 'created_at';
+    }
+    if(!order){
+        order = 'desc';
     }
     const query = `
         SELECT articles.article_id, articles.title, articles.author, articles.topic, 
