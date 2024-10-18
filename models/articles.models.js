@@ -15,8 +15,17 @@ function selectArticleById(article_id){
         });
 }
 
-//task 5 & task 11
-function selectArticle(){
+
+//task 5&task 11
+function selectArticle(sort_by= 'created_at',order = 'desc'){
+    if(!sort_by){
+        sort_by = 'created_at';
+    }
+    if(!order){
+        order = 'desc';
+    }
+
+
     
     const query = `
         SELECT articles.article_id, articles.title, articles.author, articles.topic, 
