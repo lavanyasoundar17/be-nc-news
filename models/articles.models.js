@@ -23,6 +23,7 @@ function selectArticle(sort_by= 'created_at',order = 'desc'){
     if(!order){
         order = 'desc';
     }
+    
     const query = `
         SELECT articles.article_id, articles.title, articles.author, articles.topic, 
                articles.created_at, articles.votes, articles.article_img_url,
