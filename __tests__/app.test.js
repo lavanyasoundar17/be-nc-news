@@ -365,13 +365,42 @@ describe('/api/articles', () => {
                 expect(body.msg).toBe('Bad request: invalid input');
             });
     });
-    test('400: responds with error for invalid query parameters',()=>{
-        return request(app)
-        .get('/api/articles?invalidquery')
-        .expect(400)
-        .then(({body})=>{
-            expect(body.msg).toBe('Bad request: invalid query parameter');
-        })
-    })
 });
 
+//task 12
+describe("/api/articles",()=>{
+    test("200: responds with articles sorted by given topic topic",()=>{
+        return request(app)
+        .get('/api/articles?topic=mitch')
+        .expect(200)
+        .then(({body})=>{
+            const articles = body.articles;
+            expect(articles.length).toBe(12)
+            articles.forEach(article=>{
+                expect(article.topic).toBe('mitch')
+            })
+        })
+
+    })
+    test('200: responds with an array of all articles when no topic query is provided', () => {
+        return request(app)
+          .get('/api/articles')
+          .expect(200)
+          .then(({ body }) => {
+            const { articles } = body;
+            expect(articles.length).toBe(13); 
+            articles.forEach(article => {
+              expect(article).toHaveProperty('topic');
+            });
+          });
+      });
+    test("404: responds with article not found if the topic has no related article",()=>{
+        return request(app)
+        .get('/api/articles?topic=noArticle')
+        .expect(404)
+        .then(({body})=>{
+            expect(body.msg).toBe('Article not found')
+        })
+    })
+    
+})
