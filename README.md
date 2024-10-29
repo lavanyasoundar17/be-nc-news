@@ -6,4 +6,4 @@ NodeJs
 Unit Testing: Jest
 Version Control: Git
 Hosting : Supabase, Render
-.env.development and .env.test files are created in the root of the project directory and added in .gitignore so that they cannot be pushed into the repo
+.env.development and .env.test files are created in the root of the project directory
